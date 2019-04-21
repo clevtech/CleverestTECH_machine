@@ -1,0 +1,36 @@
+flask:
+  build: ./flask-app
+  command: python3 -u ./flask-app/app.py
+  ports:
+    - "5000:5000"
+  volumes:
+    - .:/cleverest_machine
+  links:
+    - database
+tcp-server:
+  build: ./tcp-server
+  command: python3 -u ./tcp-server/server.py
+  ports:
+    - "7777:7777"
+  volumes:
+    - .:/cleverest_machine
+  links:
+    - database
+database-admin-panel:
+  image: mongo-express:latest
+  environment:
+  - ME_CONFIG_OPTIONS_EDITORTHEME=dark
+  - ME_CONFIG_MONGODB_SERVER=database
+  - ME_CONFIG_MONGODB_PORT=27017
+  - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+  - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+  - ME_CONFIG_MONGODB_AUTH_USERNAME=naboo
+  - ME_CONFIG_MONGODB_AUTH_PASSWORD=The2ndlaw
+  - ME_CONFIG_BASICAUTH_USERNAME=naboo
+  - ME_CONFIG_BASICAUTH_PASSWORD=The2ndlaw
+  ports:
+  - "8081:8081"
+  links:
+  - database
+database:
+  image: mongo:latest
